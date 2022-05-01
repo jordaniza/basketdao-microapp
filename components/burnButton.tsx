@@ -3,6 +3,8 @@ import { useDecimals, useJCRContract } from "hooks/useContract";
 import { useAppDispatch } from "hooks/useStore";
 import { ChangeEvent, useState } from "react";
 import { thunkBurn } from "store/thunks";
+import { useConnect } from "wagmi";
+import Button from "./button";
 
 const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
     const [burnAmount, setBurnAmount] = useState<BigNumber>(max);
@@ -10,6 +12,7 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
     const { decimals, isLoading } = useDecimals();
     const [burning, setBurning] = useState(false);
     const JCRContract = useJCRContract();
+    const { isConnected } = useConnect();
 
     const burn = async (amount: BigNumber) => {
         setBurning(true);
@@ -29,9 +32,9 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
 
     return (
         <div className="flex flex-wrap justify-center w-full">
-            <div className="border-2 border-green-900 rounded-md p-2 mx-2 w-1/2 flex justify-between">
+            <div className="border-4 border-white bg-purple-50 shadow-md text-xl rounded-lg px-3 py-2 mx-2 w-1/2 flex justify-between text-gray-600">
                 <input
-                    className="w-11/12"
+                    className="w-11/12 bg-transparent "
                     type="number"
                     value={parseInt(ethers.utils.formatUnits(burnAmount, decimals))}
                     onChange={onChange}
@@ -43,11 +46,10 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
                     onClick={() => setBurnAmount(max)}
                 >Max</button>
             </div>
-            <button
-                className="px-5 py-1 rounded-md shadow-sm bg-green-700 text-white"
-                disabled={isLoading || burning}
+            <Button
+                disabled={isLoading || burning || !isConnected}
                 onClick={() => burn(burnAmount)}
-            >Burn</button>
+            >Burn</Button>
         </div>
     )
 }
