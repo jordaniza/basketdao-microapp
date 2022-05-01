@@ -6,6 +6,7 @@ import { BigNumber } from 'ethers'
 import { useBalance } from 'hooks/useContract'
 import { NextPage } from 'next'
 import { NotificationDisplay } from '@components/notification'
+import Head from 'next/head'
 
 const content = `
 Burning JCRs is as simple as connecting your Metamask wallet, and hitting 'Burn' below.
@@ -19,6 +20,11 @@ After hitting burn, either wait for the notification or check metamask to confir
 const Dapp: NextPage = () => {
     const { balance } = useBalance();     
     return (
+        <>
+        <Head>
+            <title>Burn JCR Carbon Offsets | JustCarbon</title>
+            <meta name="description" content="Quickly and easily burn JustCarbon Removal tokens, directly on the ethereum blockchain with metamask." />
+        </Head>
         <div className='w-screen h-screen justify-center items-center flex bg-cover bg-[url("../public/background.jpg")]'>
                 <NotificationDisplay />
                 <div className='
@@ -37,6 +43,7 @@ const Dapp: NextPage = () => {
                     <BurnButton max={balance ? balance : BigNumber.from(0)} />
                 </div>
         </div>
+        </>
     )
 }
 

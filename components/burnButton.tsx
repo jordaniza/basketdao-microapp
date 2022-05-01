@@ -41,7 +41,7 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
         <div className="flex flex-wrap justify-center w-full">
             <div className="border-4 border-white bg-purple-50 shadow-md text-xl rounded-lg px-3 py-2 mx-2 w-1/2 flex justify-between text-gray-600">
                 <input
-                    className="w-11/12 bg-transparent "
+                    className="w-11/12 bg-transparent focus:outline-none"
                     type="number"
                     value={parseInt(ethers.utils.formatUnits(burnAmount, decimals)).toString()}
                     onChange={onChange}
@@ -50,6 +50,7 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
                     max={parseInt(ethers.utils.formatUnits(max, decimals))}
                 />
                 <button
+                    className="px-1 ml-2"
                     onClick={() => setBurnAmount(max)}
                 >Max</button>
             </div>
