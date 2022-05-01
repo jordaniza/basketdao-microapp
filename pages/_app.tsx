@@ -5,11 +5,9 @@ import { providers } from '../connectors'
 import { Provider as ReduxProvider } from "react-redux";
 import store from 'store'
 
-
-
 const client = createClient({
-  provider(config) {
-    return providers.LOCAL
+  provider() {
+    return process.env.NODE_ENV === 'development' ? providers.LOCAL : providers.MAINNET;
   }
 })
 

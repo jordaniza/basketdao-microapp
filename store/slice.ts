@@ -5,11 +5,13 @@ import { thunkBurn } from "./thunks";
 
 export type AppState = {
     balance?: string; // BN 
+    decimals?: number;
 };
 
 const appSlice = createSlice({
   name: 'application',
-  initialState: {} as AppState,
+  initialState: {
+  } as AppState,
   extraReducers: (builder) => {  
 
     builder.addCase(thunkBurn.fulfilled, (state, action) => {

@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Jcr } from "abi/types/JCR";
-import { BigNumber } from "ethers";
 
 export type ThunkBurnProps = {
     burnAmount: string;
@@ -21,3 +20,22 @@ export const thunkBurn = createAsyncThunk(
         : rejectWithValue("Burn Unsuccessful");
     }
 );
+
+
+export const thunkGetData = createAsyncThunk(
+    'app/getData',
+    async(
+        { jcr, account }: { jcr?: Jcr, account?: string },
+        { rejectWithValue }
+    ) => {
+        if (!jcr || !account) return rejectWithValue('Missing Required Parameters');
+        // should multicall this
+        const [balance, decimals] = await Promise.all([
+            jcr.balanceOf(account),
+            jcr.decimals()
+        ]);
+        return {
+            balance, decimals
+        }
+    }
+)

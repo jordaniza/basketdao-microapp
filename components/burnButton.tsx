@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import { thunkBurn } from "store/thunks";
 import { useConnect } from "wagmi";
 import Button from "./button";
+import { metamaskSubmittedNotification } from "./notification";
 
 const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
     const [burnAmount, setBurnAmount] = useState<BigNumber>(max);
@@ -14,10 +15,16 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
     const JCRContract = useJCRContract();
     const { isConnected } = useConnect();
 
-    const burn = async (amount: BigNumber) => {
+    const burn = (amount: BigNumber) => {
         setBurning(true);
-        await dispatch(thunkBurn({ burnAmount: amount.toString(), jcr: JCRContract }));
-        setBurning(false);
+        dispatch(
+            thunkBurn({ burnAmount: amount.toString(), jcr: JCRContract })
+        )
+        .then(() => {
+            setBurnAmount(BigNumber.from(0))
+            metamaskSubmittedNotification();
+        })
+        .finally(() => setBurning(false))
     };
 
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +43,7 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
                 <input
                     className="w-11/12 bg-transparent "
                     type="number"
-                    value={parseInt(ethers.utils.formatUnits(burnAmount, decimals))}
+                    value={parseInt(ethers.utils.formatUnits(burnAmount, decimals)).toString()}
                     onChange={onChange}
                     min={0}
                     step={1}
@@ -47,7 +54,7 @@ const BurnButton: React.FC<{ max: BigNumber }> = ({ max }) => {
                 >Max</button>
             </div>
             <Button
-                disabled={isLoading || burning || !isConnected}
+                disabled={isLoading || burning || !isConnected || burnAmount.eq(0)}
                 onClick={() => burn(burnAmount)}
             >Burn</Button>
         </div>

@@ -20,9 +20,10 @@ export const NotificationDisplay = () => (
 
 export const successNotification = () => toast('Burn Successful 🔥🔥🔥', { type: 'success' });
 export const errorNotification = (err: string) => toast(`Burn Failed... ${err}`, { type: 'error' });
+export const metamaskSubmittedNotification = () => toast('Transaction approved on Metamask! 🦊')
 export const infoNotification = () => toast(
     <div className='flex justify-between w-full items-center'>
-        <p>Burn Request Pending...</p>
+        <p>Burn Request in Progress...</p>
         <Loader />
     </div>,
     {
