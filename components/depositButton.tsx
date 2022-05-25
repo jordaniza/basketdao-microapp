@@ -9,8 +9,8 @@ import Button from "./button";
 const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
   const [depositAmount, setDepositAmount] = useState<BigNumber>(max);
   const [isApproved, setIsApproved] = useState(false);
-  const dispatch = useAppDispatch();
   const [inProgress, setInProgress] = useState(false);
+  const dispatch = useAppDispatch();
   const migrator = useMigratorContract();
   const bdi = useBDITokenContract();
   const [state] = useStoreState();

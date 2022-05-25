@@ -1,6 +1,10 @@
-const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => (
+const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (
+  props
+) => {
+  const { className, children, ...rest } = props;
+  return (
     <button
-        className="
+      className={`
         disabled:bg-gray-400
         disabled:text-gray-200
         disabled:border-gray-400
@@ -10,11 +14,14 @@ const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) 
         rounded-md shadow-md 
         text-white
         hover:bg-white border-2 border-primary-dark hover:text-primary-dark
-        transition-all delay-75 bg-primary-dark text-white'"
-        {...props}
+        transition-all delay-75 bg-primary-dark
+        ${" "}${className}
+    `}
+      {...rest}
     >
-        {props.children}
+      {children}
     </button>
-)
+  );
+};
 
-export default Button
+export default Button;

@@ -24,7 +24,6 @@ export const Loader: React.FC = () => (
 const Balance: React.FC = () => {
   const [state] = useStoreState();
   const { isConnected } = useConnect();
-  console.debug({ state });
   return (
     <div className="flex justify-center my-3 text-lg text-gray-600">
       {isConnected ? (

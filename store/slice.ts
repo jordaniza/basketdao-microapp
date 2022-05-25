@@ -5,7 +5,7 @@ import {
   infoNotification,
 } from "@components/notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { thunkApprove, thunkDeposit, thunkGetData } from "./thunks";
 
 enum MigratorOpenState {
@@ -16,14 +16,6 @@ enum MigratorOpenState {
 
 // alias to make it more obvious that this is a number in string repr
 type BigNumberString = string;
-
-export type AppStateIn = {
-  balance: BigNumberish;
-  decimals: number;
-  migratorOpenState: MigratorOpenState;
-  totalDeposits: BigNumberish;
-  approvalLimit: BigNumberish;
-};
 
 export type AppState = {
   balance: BigNumberString;
@@ -82,7 +74,7 @@ const appSlice = createSlice({
       errorNotification(action.error.message ?? "Unknown Error");
     });
 
-    builder.addCase(thunkGetData.pending, (state, action) => {
+    builder.addCase(thunkGetData.pending, (state) => {
       state.loading = true;
     });
 
@@ -95,7 +87,9 @@ const appSlice = createSlice({
       appSlice.caseReducers.setState(state, {
         ...action,
         payload: {
-          newState: action.payload,
+          newState: {
+            ...action.payload,
+          },
         },
       });
       state.loading = false;
@@ -103,12 +97,14 @@ const appSlice = createSlice({
   },
 
   reducers: {
-    setState: (state, action: PayloadAction<{ newState: AppStateIn }>) => {
-      state.approvalLimit = action.payload.newState.approvalLimit.toString();
-      state.decimals = action.payload.newState.decimals;
-      state.balance = action.payload.newState.balance.toString();
-      state.totalDeposits = action.payload.newState.totalDeposits.toString();
-      state.migratorOpenState = action.payload.newState.migratorOpenState;
+    setState: (
+      state,
+      action: PayloadAction<{ newState: Omit<AppState, "loading"> }>
+    ) => {
+      state = {
+        ...action.payload.newState,
+        loading: state.loading,
+      };
     },
 
     setDeposit: (state, action: PayloadAction<{ depositAmount: string }>) => {

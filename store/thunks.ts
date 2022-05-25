@@ -72,12 +72,20 @@ export const thunkGetData = createAsyncThunk(
       ? bdi.allowance(account, addresses.contracts.BASKET_MIGRATOR)
       : 0;
 
-    return promiseObject({
+    const results = await promiseObject({
       decimals,
       migratorOpenState,
       totalDeposits,
       balance,
       approvalLimit,
     });
+
+    return {
+      approvalLimit: results.approvalLimit.toString(),
+      decimals: results.decimals,
+      balance: results.balance.toString(),
+      totalDeposits: results.totalDeposits.toString(),
+      migratorOpenState: results.migratorOpenState,
+    };
   }
 );

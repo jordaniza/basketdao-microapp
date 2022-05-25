@@ -3,7 +3,8 @@
 Todo:
 
 [X] Connect Deposit to the BDI deposit
-[] Move state into redux
-[] Add WalletConnect Support
+[X] Move state into redux
+[X] Add WalletConnect Support
 [X] Review the logic for depositing
+
 [] Add some tests

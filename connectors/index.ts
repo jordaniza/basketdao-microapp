@@ -1,6 +1,7 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { InjectedConnector } from "@wagmi/core";
 import { ethers } from "ethers";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 export const injected = new InjectedConnector();
 
@@ -16,3 +17,9 @@ export const providers = Object.entries(RPC).reduce(
   }),
   {} as Record<keyof typeof RPC, JsonRpcProvider>
 );
+
+export const walletConnect = new WalletConnectConnector({
+  options: {
+    qrcode: true,
+  },
+});

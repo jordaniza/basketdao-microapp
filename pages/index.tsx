@@ -1,6 +1,6 @@
 import Balance from "@components/balance";
+import ConnectWallet from "@components/connectWallet";
 import DepositButton from "@components/depositButton";
-import { ConnectWallet } from "@components/header";
 import Logo from "@components/logo";
 import { NotificationDisplay } from "@components/notification";
 import { BigNumber } from "ethers";
