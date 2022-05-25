@@ -1,3 +1,8 @@
+# typechain
+abi/types
+
+.vscode/
+
 # Logs
 logs
 *.log

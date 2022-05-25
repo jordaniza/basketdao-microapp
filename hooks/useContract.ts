@@ -1,62 +1,45 @@
-import { Jcr } from "abi/types/JCR";
-import { addresses } from "constants/addresses";
-import { useEffect, useState } from "react";
-import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import JCRABI from 'abi/json/jcr.json'
-import { BigNumber } from "ethers";
-import { useStoreBalance } from "./useStore";
+import { providers } from "@0xsequence/multicall";
+import BasketMigratorAbi from "abi/json/basket-migrator.json";
+import BdiAbi from "abi/json/bdi.json";
+import { BasketMigrator } from "abi/types";
+import { Bdi } from "abi/types/Bdi";
+import { Contract, ContractInterface, ethers } from "ethers";
+import { useMemo } from "react";
+import { useProvider, useSigner } from "wagmi";
+import { addresses } from "../constants";
 
-export const useJCRContract = (): Jcr | undefined => {
-    const { data: signer }  = useSigner();
-    const provider = useProvider();
-    const contract = useContract<Jcr>({
-        addressOrName: addresses.contracts.JCR,
-        contractInterface: JCRABI,
-        signerOrProvider: signer ?? provider
-    })
-    return contract
+const useMulticallProvider = () => {
+  const provider = useProvider();
+  return useMemo(() => new providers.MulticallProvider(provider), [provider]);
 };
 
-export const useBalance = (): { balance: BigNumber | undefined; isLoading: boolean } => {
-    const [balance, setBalance] = useStoreBalance(); 
-    const [isLoading, setIsLoading] = useState(false);
-    const JCRContract = useJCRContract();
-    const { data: account } = useAccount();
-    
-
-    useEffect(() => {
-        if (!account?.address || !JCRContract) return;
-        setIsLoading(true)
-        JCRContract.balanceOf(account.address)
-            .then(b => setBalance(b.toString()))
-            .catch(console.error)
-            .finally(() => setIsLoading(false))
-    }, [account?.address]);
-
-    return {
-        balance, isLoading
-    }
+type MulticallEnabledContract<C extends Contract> = C & {
+  provider: providers.MulticallProvider;
 };
 
-export const useDecimals = (): { decimals: number | undefined; isLoading: boolean } => {
-    const [decimals, setDecimals] = useState<number | undefined>();
-    const [isLoading, setIsLoading] = useState(false);
-    const JCRContract = useJCRContract();
-    const { data: account } = useAccount()
-    
-    useEffect(() => {
-        if (!account?.address || !JCRContract) return;
-        setIsLoading(true)
-        JCRContract.decimals()
-            .then(setDecimals)
-            .catch(console.error)
-            .finally(() => setIsLoading(false))
-    }, [account?.address]);
+const useMulticallContractOrSigner = <C extends Contract>(
+  address: string,
+  abi: ContractInterface
+): MulticallEnabledContract<C> => {
+  const provider = useMulticallProvider();
+  const { data: signer } = useSigner();
+  const providerOrSigner = signer ?? provider;
+  return useMemo(
+    () =>
+      new ethers.Contract(
+        address,
+        abi,
+        providerOrSigner
+      ) as MulticallEnabledContract<C>,
+    [provider, signer, address, abi]
+  );
+};
 
-    return {
-        decimals, isLoading
-    }    
+export const useBDITokenContract = (): Bdi =>
+  useMulticallContractOrSigner(addresses.contracts.BDI, BdiAbi);
 
-}
-
-
+export const useMigratorContract = (): BasketMigrator =>
+  useMulticallContractOrSigner(
+    addresses.contracts.BASKET_MIGRATOR,
+    BasketMigratorAbi
+  );

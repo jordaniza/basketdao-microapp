@@ -1,50 +1,70 @@
-import Balance, { Loader } from '@components/balance'
-import BurnButton from '@components/burnButton'
-import{ ConnectWallet } from '@components/header'
-import Logo from '@components/logo'
-import { BigNumber } from 'ethers'
-import { useBalance } from 'hooks/useContract'
-import { NextPage } from 'next'
-import { NotificationDisplay } from '@components/notification'
-import Head from 'next/head'
+import Balance from "@components/balance";
+import DepositButton from "@components/depositButton";
+import { ConnectWallet } from "@components/header";
+import Logo from "@components/logo";
+import { NotificationDisplay } from "@components/notification";
+import { BigNumber } from "ethers";
+import { useBDITokenContract, useMigratorContract } from "hooks/useContract";
+import { useAppDispatch, useStoreState } from "hooks/useStore";
+import { NextPage } from "next";
+import Head from "next/head";
+import { useEffect } from "react";
+import { thunkGetData } from "store/thunks";
+import { useAccount } from "wagmi";
 
 const content = `
-Burning JCRs is as simple as connecting your Metamask wallet, and hitting 'Burn' below.
+This page is a mockup of the content that we will use for the PieDAO/BasketDAO acquisition, giving
+BDI hodlers the chance to exchange their index tokens for DEFI++ and, depending on the final deposits, DOUGH.
+`;
 
-Please make sure you have enough Eth in your wallet to execute the transaction. Depending on the time, and how busy the network is, this can get more or less expensive.
+const useOnChainData = () => {
+  const bdi = useBDITokenContract();
+  const migrator = useMigratorContract();
+  const dispatch = useAppDispatch();
+  const { data: account } = useAccount();
 
-After hitting burn, either wait for the notification or check metamask to confirm your burn is processed.
-
-`
+  useEffect(() => {
+    dispatch(thunkGetData({ bdi, migrator, account: account?.address }));
+  }, [bdi, migrator, account]);
+};
 
 const Dapp: NextPage = () => {
-    const { balance } = useBalance();     
-    return (
-        <>
-        <Head>
-            <title>Burn JCR Carbon Offsets | JustCarbon</title>
-            <meta name="description" content="Quickly and easily burn JustCarbon Removal tokens, directly on the ethereum blockchain with metamask." />
-        </Head>
-        <div className='w-screen h-screen justify-center items-center flex bg-cover bg-[url("../public/background.jpg")]'>
-                <NotificationDisplay />
-                <div className='
+  const [state] = useStoreState();
+  useOnChainData();
+
+  return (
+    <>
+      <Head>
+        <title>Deposit BDI Tokens | PieDAO</title>
+        <meta
+          name="description"
+          content="Quickly and easily burn JustCarbon Removal tokens, directly on the ethereum blockchain with metamask."
+        />
+      </Head>
+      <div className='w-screen h-screen justify-center items-center flex bg-cover bg-[url("../public/background.jpg")]'>
+        <NotificationDisplay />
+        <div
+          className="
                     mt-5 p-5 w-11/12 max-w-[900px]
                     shadow-lg rounded-xl h-3/4
                     flex flex-col items-center justify-evenly 
                     bg-white
                     bg-opacity-30
                     border-8 border-white
-                    '>
-                    <Logo />
-                    <p className='text-3xl font-bold text-primary-dark'>Burn JCRs</p>
-                    <p className='text-gray-600 text-center w-10/12'>{content}</p>
-                    <ConnectWallet />
-                    <Balance />
-                    <BurnButton max={balance ? balance : BigNumber.from(0)} />
-                </div>
+                    "
+        >
+          <Logo />
+          <p className="text-3xl font-bold text-primary-dark">
+            Deposit BDI Tokens
+          </p>
+          <p className="text-gray-600 text-center w-10/12">{content}</p>
+          <ConnectWallet />
+          <Balance />
+          <DepositButton max={BigNumber.from(state.balance)} />
         </div>
-        </>
-    )
-}
+      </div>
+    </>
+  );
+};
 
-export default Dapp
+export default Dapp;

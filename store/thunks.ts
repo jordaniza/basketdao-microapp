@@ -1,41 +1,83 @@
+import { walletSubmittedNotification } from "@components/notification";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { Jcr } from "abi/types/JCR";
+import { Bdi } from "abi/types";
+import { BasketMigrator } from "abi/types/BasketMigrator";
+import { ethers } from "ethers";
+import { promiseObject } from "utils/promiseObject";
+import { addresses } from "../constants";
 
-export type ThunkBurnProps = {
-    burnAmount: string;
-    jcr: Jcr | undefined
+export const THUNKS = {
+  DEPOSIT: "app/deposit",
+  APPROVE: "app/approve",
+  GET_DATA: "app/getData",
 };
 
-export const thunkBurn = createAsyncThunk(
-    "app/burn",
-    async (
-      { burnAmount, jcr }: ThunkBurnProps,
-      { rejectWithValue }
-) => {
-    if (!jcr) return rejectWithValue('Missing JCR Contract');
-    const tx = await jcr.burn(burnAmount);
+export type ThunkDepositProps = {
+  depositAmount: string;
+  migrator: BasketMigrator | undefined;
+};
+export const thunkDeposit = createAsyncThunk(
+  THUNKS.DEPOSIT,
+  async (
+    { depositAmount, migrator }: ThunkDepositProps,
+    { rejectWithValue }
+  ) => {
+    if (!migrator) return rejectWithValue("Missing Migrator Contract");
+    const tx = await migrator.enter(depositAmount);
+    walletSubmittedNotification();
     const receipt = await tx.wait();
     return receipt.status === 1
-        ? { burnAmount }
-        : rejectWithValue("Burn Unsuccessful");
-    }
+      ? { depositAmount }
+      : rejectWithValue("Deposit Unsuccessful");
+  }
 );
 
+export type ThunkApproveProps = {
+  bdi: Bdi;
+};
+export const thunkApprove = createAsyncThunk(
+  THUNKS.APPROVE,
+  async ({ bdi }: ThunkApproveProps, { rejectWithValue }) => {
+    if (!bdi) return rejectWithValue("Missing BDI Contract");
+    const tx = await bdi.approve(
+      addresses.contracts.BASKET_MIGRATOR,
+      ethers.constants.MaxUint256
+    );
+    walletSubmittedNotification();
+    const receipt = await tx.wait();
+    return receipt.status === 1
+      ? true
+      : rejectWithValue("Deposit Unsuccessful");
+  }
+);
 
+type ThunkGetDataProps = {
+  bdi?: Bdi;
+  account?: string;
+  migrator?: BasketMigrator;
+};
 export const thunkGetData = createAsyncThunk(
-    'app/getData',
-    async(
-        { jcr, account }: { jcr?: Jcr, account?: string },
-        { rejectWithValue }
-    ) => {
-        if (!jcr || !account) return rejectWithValue('Missing Required Parameters');
-        // should multicall this
-        const [balance, decimals] = await Promise.all([
-            jcr.balanceOf(account),
-            jcr.decimals()
-        ]);
-        return {
-            balance, decimals
-        }
-    }
-)
+  THUNKS.GET_DATA,
+  async (
+    { bdi, account, migrator }: ThunkGetDataProps,
+    { rejectWithValue }
+  ) => {
+    if (!bdi || !migrator) return rejectWithValue("Missing Required Contracts");
+
+    const decimals = bdi.decimals();
+    const migratorOpenState = migrator.state();
+    const totalDeposits = migrator.totalDeposits();
+    const balance = account ? bdi.balanceOf(account) : 0;
+    const approvalLimit = account
+      ? bdi.allowance(account, addresses.contracts.BASKET_MIGRATOR)
+      : 0;
+
+    return promiseObject({
+      decimals,
+      migratorOpenState,
+      totalDeposits,
+      balance,
+      approvalLimit,
+    });
+  }
+);
