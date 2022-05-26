@@ -67,6 +67,7 @@ export const thunkGetData = createAsyncThunk(
     const decimals = bdi.decimals();
     const migratorOpenState = migrator.state();
     const totalDeposits = migrator.totalDeposits();
+    const userDeposits = account ? migrator.deposits(account) : 0;
     const balance = account ? bdi.balanceOf(account) : 0;
     const approvalLimit = account
       ? bdi.allowance(account, addresses.contracts.BASKET_MIGRATOR)
@@ -78,6 +79,7 @@ export const thunkGetData = createAsyncThunk(
       totalDeposits,
       balance,
       approvalLimit,
+      userDeposits,
     });
 
     return {
@@ -86,6 +88,7 @@ export const thunkGetData = createAsyncThunk(
       balance: results.balance.toString(),
       totalDeposits: results.totalDeposits.toString(),
       migratorOpenState: results.migratorOpenState,
+      userDeposits: results.userDeposits.toString(),
     };
   }
 );

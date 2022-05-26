@@ -1,6 +1,6 @@
 import { Action, ThunkAction } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { AppState, AppStateIn, setState } from "store/slice";
+import { AppState, setState } from "store/slice";
 import store from "../store";
 
 export type AppDispatch = typeof store.dispatch;
@@ -19,11 +19,11 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 // analgous to useState in react hooks
 export const useStoreState = (): [
   state: AppState,
-  setStoreState: (newState: AppStateIn) => void
+  setStoreState: (newState: AppState) => void
 ] => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state);
-  const setStoreState = (newState: AppStateIn) =>
+  const setStoreState = (newState: AppState) =>
     dispatch(setState({ newState }));
   return [state, setStoreState];
 };

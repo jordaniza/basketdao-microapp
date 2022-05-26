@@ -30,7 +30,7 @@ const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
       .finally(() => setInProgress(false));
   };
 
-  const burn = (amount: BigNumber) => {
+  const deposit = (amount: BigNumber) => {
     setInProgress(true);
     dispatch(thunkDeposit({ depositAmount: amount.toString(), migrator }))
       .then((res) => {
@@ -67,7 +67,7 @@ const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
         disabled={
           state.loading || inProgress || !isConnected || depositAmount.eq(0)
         }
-        onClick={() => (isApproved ? burn(depositAmount) : approve())}
+        onClick={() => (isApproved ? deposit(depositAmount) : approve())}
       >
         {isApproved ? "Deposit" : "Approve"}
       </Button>

@@ -23,6 +23,7 @@ export type AppState = {
   migratorOpenState: MigratorOpenState;
   totalDeposits: BigNumberString;
   approvalLimit: BigNumberString;
+  userDeposits: BigNumberString;
   loading: boolean;
 };
 
@@ -34,8 +35,10 @@ const appSlice = createSlice({
     migratorOpenState: MigratorOpenState.Closed,
     totalDeposits: "0",
     approvalLimit: "0",
+    userDeposits: "0",
     loading: false,
   } as AppState,
+
   extraReducers: (builder) => {
     builder.addCase(thunkDeposit.fulfilled, (state, action) => {
       state.loading = false;
