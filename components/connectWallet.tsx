@@ -1,19 +1,12 @@
 import { useModalTools } from "hooks/useModalTools";
 import { useReady } from "hooks/useReady";
 import React from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useEnsName } from "wagmi";
 import Button from "./button";
 import { TransitionDialog } from "./dialog";
 
 const formatAccount = (account?: string): string =>
   account ? account.slice(0, 5) + "..." + account.slice(-5) : "ERROR";
-
-const useAccountName = (isConnected = false): ((name: string) => string) => {
-  const { data: account } = useAccount();
-
-  return (name: string) =>
-    isConnected ? formatAccount(account?.address) : `Connect ${name}`;
-};
 
 const ConnectWallet = () => {
   const {
@@ -25,6 +18,19 @@ const ConnectWallet = () => {
     activeConnector,
   } = useConnect();
   const { disconnect } = useDisconnect();
+  const useAccountName = (isConnected = false): ((name: string) => string) => {
+    const { data: account } = useAccount();
+    const { data: ensName } = useEnsName({
+      address: account?.address,
+    });
+
+    return (name: string) =>
+      isConnected && ensName
+        ? ensName
+        : isConnected
+        ? formatAccount(account?.address)
+        : `Connect ${name}`;
+  };
   const accountName = useAccountName(isConnected);
   const ready = useReady();
   const modalTools = useModalTools();

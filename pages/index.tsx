@@ -22,10 +22,6 @@ const useOnChainData = () => {
   const migrator = useMigratorContract();
   const dispatch = useAppDispatch();
   const { data: account } = useAccount();
-  const ensName = useEnsName({
-    address: "0xA0Cf798816D4b9b9866b5330EEa46a18382f251e",
-  });
-  console.log(ensName);
 
   useEffect(() => {
     dispatch(thunkGetData({ bdi, migrator, account: account?.address }));
