@@ -10,7 +10,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import { thunkGetData } from "store/thunks";
-import { useAccount } from "wagmi";
+import { useAccount, useEnsName } from "wagmi";
 
 const content = `
 This page is a mockup of the content that we will use for the PieDAO/BasketDAO acquisition, giving
@@ -22,10 +22,14 @@ const useOnChainData = () => {
   const migrator = useMigratorContract();
   const dispatch = useAppDispatch();
   const { data: account } = useAccount();
+  const ensName = useEnsName({
+    address: "0xA0Cf798816D4b9b9866b5330EEa46a18382f251e",
+  });
+  console.log(ensName);
 
   useEffect(() => {
     dispatch(thunkGetData({ bdi, migrator, account: account?.address }));
-  }, [bdi, migrator, account]);
+  }, [bdi, migrator, account, dispatch]);
 };
 
 const Dapp: NextPage = () => {
