@@ -8,7 +8,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BigNumber, ethers } from "ethers";
 import { thunkApprove, thunkDeposit, thunkGetData } from "./thunks";
 
-enum MigratorOpenState {
+export enum MigratorOpenState {
   Open,
   Baking,
   Closed,
