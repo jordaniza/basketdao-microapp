@@ -7,10 +7,14 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          dark: 'rgb(129, 57, 245)'
-        }
-      }
+          dark: "#6C5DFE",
+          "main-typography": "#180A6D",
+          highlight: "#A20ED3",
+          green: "#3BD754",
+          red: "#F23434",
+        },
+      },
     },
   },
   plugins: [],
-}
+};

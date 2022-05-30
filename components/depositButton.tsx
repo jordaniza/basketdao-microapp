@@ -49,17 +49,17 @@ const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
   };
 
   return (
-    <div className="flex flex-wrap justify-center w-full">
-      <div className="border-4 border-white bg-purple-50 shadow-md text-xl rounded-lg px-3 py-2 mx-2 w-1/2 flex justify-between text-gray-600">
+    <div className="flex gap-x-4 w-full">
+      <div className="border-4 border-white shadow-sm text-xl rounded-lg px-3 py-2 w-2/3 flex justify-between text-gray-600">
         <input
-          className="w-11/12 bg-transparent focus:outline-none"
+          className="w-full bg-transparent focus:outline-none color-main-typography font-bold text-3xl appearance-none"
           type="number"
           value={ethers.utils.formatUnits(depositAmount, state.decimals)}
           onChange={onChange}
           min={0}
           max={ethers.utils.formatUnits(max, state.decimals)}
         />
-        <button className="px-1 ml-2" onClick={() => setDepositAmount(max)}>
+        <button className="px-1 ml-auto" onClick={() => setDepositAmount(max)}>
           Max
         </button>
       </div>
