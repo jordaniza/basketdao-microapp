@@ -1,22 +1,22 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { InjectedConnector } from "@wagmi/core";
-import { ethers } from "ethers";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { chain, configureChains } from "wagmi";
 
-export const injected = new InjectedConnector();
-
-export const RPC = {
-  MAINNET: "https://rpc.ankr.com/eth",
-  LOCAL: "http://127.0.0.1:8545",
-};
-
-export const providers = Object.entries(RPC).reduce(
-  (prev, [key, rpc]) => ({
-    ...prev,
-    [key]: new ethers.providers.JsonRpcProvider(rpc),
+export const providers = jsonRpcProvider({
+  rpc: () => ({
+    http:
+      process.env.NODE_ENV === "development"
+        ? "http://127.0.0.1:8545"
+        : "https://rpc.ankr.com/eth",
   }),
-  {} as Record<keyof typeof RPC, JsonRpcProvider>
+});
+
+export const { chains, provider } = configureChains(
+  [chain.mainnet],
+  [providers]
 );
+export const injected = new InjectedConnector({ chains });
 
 export const walletConnect = new WalletConnectConnector({
   options: {
