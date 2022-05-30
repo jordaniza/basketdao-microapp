@@ -10,12 +10,30 @@ export const THUNKS = {
   DEPOSIT: "app/deposit",
   APPROVE: "app/approve",
   GET_DATA: "app/getData",
+  WITHDRAW: "app/withdraw",
 };
 
 export type ThunkDepositProps = {
   depositAmount: string;
   migrator: BasketMigrator | undefined;
 };
+
+export const thunkWithdraw = createAsyncThunk(
+  THUNKS.WITHDRAW,
+  async (
+    { migrator }: { migrator: BasketMigrator | undefined },
+    { rejectWithValue }
+  ) => {
+    if (!migrator) return rejectWithValue("Missing Migrator Contract");
+    const tx = await migrator.exit();
+    walletSubmittedNotification();
+    const receipt = await tx.wait();
+    return receipt.status === 1
+      ? true
+      : rejectWithValue("Withdraw Unsuccessful");
+  }
+);
+
 export const thunkDeposit = createAsyncThunk(
   THUNKS.DEPOSIT,
   async (

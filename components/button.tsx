@@ -15,7 +15,7 @@ const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (
         text-white
         hover:bg-white border-2 border-primary-dark hover:text-primary-dark
         transition-all delay-75 bg-primary-dark
-        ${" "}${className}
+        ${" "}${className ? className : ""}
     `}
       {...rest}
     >

@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { useStoreState } from "hooks/useStore";
+import { MigratorOpenState } from "store/slice";
 import { useConnect } from "wagmi";
 
 export const Loader: React.FC = () => (
@@ -30,18 +31,56 @@ const Balance: React.FC = () => {
         state.loading ? (
           <Loader />
         ) : (
-          <p>
-            Your BDI Balance is:{" "}
-            <span className="text-primary-dark font-bold ">
-              {ethers.utils.formatUnits(state.balance, state.decimals)}
-            </span>
-          </p>
+          <BalanceState />
         )
       ) : (
-        <p>Connect Wallet to see BDI Balance</p>
+        <p>Connect to see your Balance</p>
       )}
     </div>
   );
 };
 
 export default Balance;
+
+const BalanceState: React.FC = () => {
+  const [state] = useStoreState();
+  return (
+    <>
+      {state.migratorOpenState === MigratorOpenState.Open && (
+        <>
+          <p>
+            Your BDI Balance is:{" "}
+            <span className="text-primary-dark font-bold">
+              {ethers.utils.formatUnits(state.balance, state.decimals)}
+            </span>
+          </p>
+          <p className="ml-2">
+            You deposited:{" "}
+            <span className="text-primary-dark font-bold">
+              {ethers.utils.formatUnits(state.userDeposits, state.decimals)} BDI
+            </span>
+          </p>
+        </>
+      )}
+      {state.migratorOpenState === MigratorOpenState.Baking && (
+        <>
+          You deposited:{" "}
+          <span className="text-primary-dark font-bold">
+            {ethers.utils.formatUnits(state.userDeposits, state.decimals)} BDI
+          </span>
+        </>
+      )}
+      {state.migratorOpenState === MigratorOpenState.Closed && (
+        <>
+          <p>
+            Your can withdraw:{" "}
+            <span className="text-primary-dark font-bold">
+              {ethers.utils.formatUnits(state.userDeposits, state.decimals)}{" "}
+              DEFI++
+            </span>
+          </p>
+        </>
+      )}
+    </>
+  );
+};
