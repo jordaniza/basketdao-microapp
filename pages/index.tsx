@@ -10,9 +10,9 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import { thunkGetData } from "store/thunks";
-import { useAccount } from "wagmi";
 import Logo from "public/logo.svg";
 import { MigratorOpenState } from "../store/slice";
+import { useAccount } from "wagmi";
 
 const content = `
 This page is a mockup of the content that we will use for the PieDAO/BasketDAO acquisition, giving
