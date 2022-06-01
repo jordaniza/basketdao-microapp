@@ -104,10 +104,12 @@ const appSlice = createSlice({
       state,
       action: PayloadAction<{ newState: Omit<AppState, "loading"> }>
     ) => {
-      state = {
-        ...action.payload.newState,
-        loading: state.loading,
-      };
+      state.approvalLimit = action.payload.newState.approvalLimit;
+      state.balance = action.payload.newState.balance;
+      state.decimals = action.payload.newState.decimals;
+      state.migratorOpenState = action.payload.newState.migratorOpenState;
+      state.totalDeposits = action.payload.newState.totalDeposits;
+      state.userDeposits = action.payload.newState.userDeposits;
     },
 
     setDeposit: (state, action: PayloadAction<{ depositAmount: string }>) => {

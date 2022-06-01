@@ -2,8 +2,8 @@ import { BigNumber, ethers } from "ethers";
 import { useBDITokenContract, useMigratorContract } from "hooks/useContract";
 import { useAppDispatch, useStoreState } from "hooks/useStore";
 import { ChangeEvent, useEffect, useState } from "react";
-import { thunkApprove, thunkDeposit } from "store/thunks";
-import { useConnect } from "wagmi";
+import { thunkApprove, thunkDeposit, thunkGetData } from "store/thunks";
+import { useAccount, useConnect } from "wagmi";
 import Button from "./button";
 
 const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
@@ -15,6 +15,7 @@ const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
   const bdi = useBDITokenContract();
   const [state] = useStoreState();
   const { isConnected } = useConnect();
+  const { data: account } = useAccount();
 
   useEffect(() => {
     setIsApproved(BigNumber.from(state.approvalLimit).gte(depositAmount));
@@ -37,7 +38,10 @@ const DepositButton: React.FC<{ max: BigNumber }> = ({ max }) => {
         if (res.meta.requestStatus === "rejected") return;
         setDepositAmount(BigNumber.from(0));
       })
-      .finally(() => setInProgress(false));
+      .finally(() => {
+        setInProgress(false);
+        dispatch(thunkGetData({ bdi, migrator, account: account?.address }));
+      });
   };
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {

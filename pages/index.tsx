@@ -3,6 +3,7 @@ import ConnectWallet from "@components/connectWallet";
 import DepositButton from "@components/depositButton";
 import WithdrawButton from "@components/withdrawButton";
 import { NotificationDisplay } from "@components/notification";
+import Content from "@components/content";
 import { BigNumber } from "ethers";
 import { useBDITokenContract, useMigratorContract } from "hooks/useContract";
 import { useAppDispatch, useStoreState } from "hooks/useStore";
@@ -12,12 +13,7 @@ import { useEffect } from "react";
 import { thunkGetData } from "store/thunks";
 import Logo from "public/logo.svg";
 import { MigratorOpenState } from "../store/slice";
-import { useAccount } from "wagmi";
-
-const content = `
-This page is a mockup of the content that we will use for the PieDAO/BasketDAO acquisition, giving
-BDI hodlers the chance to exchange their index tokens for DEFI++ and, depending on the final deposits, DOUGH.
-`;
+import { useAccount, useConnect } from "wagmi";
 
 const useOnChainData = () => {
   const bdi = useBDITokenContract();
@@ -32,6 +28,7 @@ const useOnChainData = () => {
 
 const Dapp: NextPage = () => {
   const [state] = useStoreState();
+  const { isConnected } = useConnect();
   useOnChainData();
 
   return (
@@ -55,17 +52,19 @@ const Dapp: NextPage = () => {
               <h2 className="text-3xl font-bold text-primary-dark">
                 DEPOSIT BDI TOKEN
               </h2>
-              <p className="text-gray-600 w-10/12">{content}</p>
+              <Content phase={!isConnected ? 0 : state.migratorOpenState} />
               <ConnectWallet />
             </div>
             <div className="w-full flex flex-col gap-y-1 items-start">
               <Balance />
-              {state.migratorOpenState === MigratorOpenState.Open && (
-                <DepositButton max={BigNumber.from(state.balance)} />
-              )}
-              {state.migratorOpenState === MigratorOpenState.Closed && (
-                <WithdrawButton />
-              )}
+              {isConnected &&
+                state.migratorOpenState === MigratorOpenState.Open && (
+                  <DepositButton max={BigNumber.from(state.balance)} />
+                )}
+              {isConnected &&
+                state.migratorOpenState === MigratorOpenState.Closed && (
+                  <WithdrawButton />
+                )}
             </div>
           </div>
         </div>
