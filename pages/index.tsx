@@ -20,9 +20,9 @@ const useOnChainData = () => {
   const migrator = useMigratorContract();
   const dispatch = useAppDispatch();
   const { data: account } = useAccount();
-
   useEffect(() => {
-    dispatch(thunkGetData({ bdi, migrator, account: account?.address }));
+    if (!account) return;
+    dispatch(thunkGetData({ bdi, migrator, account: account.address }));
   }, [bdi, migrator, account, dispatch]);
 };
 

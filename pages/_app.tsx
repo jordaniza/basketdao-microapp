@@ -1,8 +1,8 @@
 import type { AppProps } from "next/app";
 import { Provider as ReduxProvider } from "react-redux";
-import store from "store";
 import { createClient, WagmiConfig } from "wagmi";
 import { injected, provider, walletConnect } from "../connectors";
+import { wrapper } from "../store";
 import "../styles/globals.css";
 
 const client = createClient({
@@ -10,11 +10,12 @@ const client = createClient({
   provider,
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, ...rest }: AppProps) {
+  const { props, store } = wrapper.useWrappedStore(rest);
   return (
     <ReduxProvider store={store}>
       <WagmiConfig client={client}>
-        <Component {...pageProps} />
+        <Component {...props.pageProps} />
       </WagmiConfig>
     </ReduxProvider>
   );

@@ -17,7 +17,7 @@ export enum MigratorOpenState {
 // alias to make it more obvious that this is a number in string repr
 type BigNumberString = string;
 
-export type AppState = {
+export type RootState = {
   balance: BigNumberString;
   decimals: number;
   migratorOpenState: MigratorOpenState;
@@ -37,7 +37,7 @@ const appSlice = createSlice({
     approvalLimit: "0",
     userDeposits: "0",
     loading: false,
-  } as AppState,
+  } as RootState,
 
   extraReducers: (builder) => {
     builder.addCase(thunkDeposit.fulfilled, (state, action) => {
@@ -102,7 +102,7 @@ const appSlice = createSlice({
   reducers: {
     setState: (
       state,
-      action: PayloadAction<{ newState: Omit<AppState, "loading"> }>
+      action: PayloadAction<{ newState: Omit<RootState, "loading"> }>
     ) => {
       state.approvalLimit = action.payload.newState.approvalLimit;
       state.balance = action.payload.newState.balance;

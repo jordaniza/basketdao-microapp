@@ -1,16 +1,6 @@
-import { Action, ThunkAction } from "@reduxjs/toolkit";
+import { setState } from "store/slice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { AppState, setState } from "store/slice";
-import store from "../store";
-
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+import { AppDispatch, RootState } from "../store";
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -18,12 +8,12 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // analgous to useState in react hooks
 export const useStoreState = (): [
-  state: AppState,
-  setStoreState: (newState: AppState) => void
+  state: RootState,
+  setStoreState: (newState: RootState) => void
 ] => {
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state);
-  const setStoreState = (newState: AppState) =>
+  const state: RootState = useAppSelector((state) => state.reducer);
+  const setStoreState = (newState: Omit<RootState, "loading">) =>
     dispatch(setState({ newState }));
   return [state, setStoreState];
 };
