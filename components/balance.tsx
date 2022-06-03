@@ -52,7 +52,7 @@ const BalanceState: React.FC = () => {
       {state.migratorOpenState === MigratorOpenState.Open && (
         <>
           <p>
-            Your BDI Balance is:{" "}
+            Your BDI Balance is:&nbsp;
             <span className="text-primary-dark font-bold">
               {formatDisplayNumber(
                 ethers.utils.formatUnits(state.balance, state.decimals)
@@ -60,7 +60,7 @@ const BalanceState: React.FC = () => {
             </span>
           </p>
           <p className="ml-2">
-            You deposited:{" "}
+            You deposited:&nbsp;
             <span className="text-primary-dark font-bold">
               {formatDisplayNumber(
                 ethers.utils.formatUnits(state.userDeposits, state.decimals)
@@ -72,7 +72,7 @@ const BalanceState: React.FC = () => {
       )}
       {state.migratorOpenState === MigratorOpenState.Baking && (
         <>
-          You deposited:{" "}
+          You deposited:&nbsp;
           <span className="text-primary-dark font-bold">
             {formatDisplayNumber(
               ethers.utils.formatUnits(state.userDeposits, state.decimals)

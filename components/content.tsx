@@ -6,12 +6,10 @@ const Content: React.FC<{ phase: number }> = ({ phase }) => {
           <>
             Hi BDI token holder, welcome to PieDAO! We&apos;re excited to have
             you in our community. This mixer tool allows you to deposit your BDI
-            tokens during the migration period.
-            <br />
-            After depositing BDI you can swap it for our DeFi token{" "}
-            <span className="font-bold">OR</span> lock DeFi for 12 months.
-            Locking it will entitle you to receive a part of the BDI-DeFi KPI
-            Options reward. Full details{" "}
+            tokens during the migration period. After depositing BDI you can
+            swap it for our DeFi token <span className="font-bold">OR</span>{" "}
+            lock DeFi for 12 months. Locking it will entitle you to receive a
+            part of the BDI-DeFi KPI Options reward. Full details{" "}
             <a
               href="https://www.notion.so/piedao/BasketDAO-Acquisition-f30e72bf13754c3e844d562804ad1545"
               rel="noreferrer noopener"

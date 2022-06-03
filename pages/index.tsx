@@ -37,14 +37,14 @@ const Dapp: NextPage = () => {
         <title>Deposit BDI Tokens | PieDAO</title>
         <meta
           name="description"
-          content="Quickly and easily burn JustCarbon Removal tokens, directly on the ethereum blockchain with metamask."
+          content="Migrate your BasketDAO's BDI token to  PieDAO's DeFi token."
         />
       </Head>
       <div className="w-screen h-screen justify-center items-center flex bg-[linear-gradient(90deg,_#FFFFFF_33.333%,_#6C5DFE_33.333%)]">
         <NotificationDisplay />
-        <div className="flex flex-row m-2 p-2 sm:max-w-4xl sm:w-full h-full sm:max-h-[80%] 2xl:-translate-x-1/4">
+        <div className="flex flex-row m-2 p-2 sm:max-w-4xl sm:w-full min-h-fit 2xl:-translate-x-1/4">
           <div className="w-[10px] min-h-full rounded-xl bg-[#A20ED3]" />
-          <div className="p-5 w-full shadow-lg rounded-lg flex flex-col items-start justify-between bg-white">
+          <div className="p-5 w-full shadow-lg rounded-lg flex flex-col items-start justify-between bg-white gap-y-8">
             <div className="flex w-80">
               <Logo />
             </div>

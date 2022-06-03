@@ -14,6 +14,9 @@ module.exports = {
           red: "#F23434",
         },
       },
+      fontFamily: {
+        sans: ["Silka"],
+      },
     },
   },
   plugins: [],

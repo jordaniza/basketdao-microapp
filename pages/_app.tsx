@@ -8,6 +8,7 @@ import "../styles/globals.css";
 const client = createClient({
   connectors: [injected, walletConnect],
   provider,
+  autoConnect: true,
 });
 
 function MyApp({ Component, ...rest }: AppProps) {
