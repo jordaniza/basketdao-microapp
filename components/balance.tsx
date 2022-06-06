@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useStoreState } from "hooks/useStore";
 import { MigratorOpenState } from "store/slice";
 import { useConnect } from "wagmi";
@@ -87,7 +87,12 @@ const BalanceState: React.FC = () => {
             Your can withdraw:{" "}
             <span className="text-primary-dark font-bold">
               {formatDisplayNumber(
-                ethers.utils.formatUnits(state.userDeposits, state.decimals)
+                ethers.utils.formatUnits(
+                  BigNumber.from(state.userDeposits).mul(
+                    BigNumber.from(state.rate)
+                  ),
+                  state.decimals
+                )
               )}{" "}
               DEFI++
             </span>

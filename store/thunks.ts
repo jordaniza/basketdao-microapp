@@ -90,6 +90,7 @@ export const thunkGetData = createAsyncThunk(
     const approvalLimit = account
       ? bdi.allowance(account, addresses.contracts.BASKET_MIGRATOR)
       : 0;
+    const rate = migrator.rate();
 
     const results = await promiseObject({
       decimals,
@@ -98,6 +99,7 @@ export const thunkGetData = createAsyncThunk(
       balance,
       approvalLimit,
       userDeposits,
+      rate,
     });
 
     return {
@@ -107,6 +109,7 @@ export const thunkGetData = createAsyncThunk(
       totalDeposits: results.totalDeposits.toString(),
       migratorOpenState: results.migratorOpenState,
       userDeposits: results.userDeposits.toString(),
+      rate: results.rate.toString(),
     };
   }
 );

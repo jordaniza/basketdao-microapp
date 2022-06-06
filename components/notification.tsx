@@ -26,6 +26,11 @@ export const approvalSuccessNotification = () => {
   toast("Approval Successful!", { type: "success" });
 };
 
+export const withdrawalSuccessNotification = () => {
+  toast.dismiss();
+  toast("Withdrawal Successful!", { type: "success" });
+};
+
 export const errorNotification = (err: string) => {
   toast.dismiss();
   toast(`Deposit Failed... ${err}`, { type: "error" });

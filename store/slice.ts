@@ -1,12 +1,18 @@
 import {
   approvalSuccessNotification,
   depositSuccessNotification,
+  withdrawalSuccessNotification,
   errorNotification,
   infoNotification,
 } from "@components/notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BigNumber, ethers } from "ethers";
-import { thunkApprove, thunkDeposit, thunkGetData } from "./thunks";
+import {
+  thunkApprove,
+  thunkDeposit,
+  thunkGetData,
+  thunkWithdraw,
+} from "./thunks";
 
 export enum MigratorOpenState {
   Open,
@@ -25,6 +31,7 @@ export type RootState = {
   approvalLimit: BigNumberString;
   userDeposits: BigNumberString;
   loading: boolean;
+  rate: BigNumberString;
 };
 
 const appSlice = createSlice({
@@ -37,6 +44,7 @@ const appSlice = createSlice({
     approvalLimit: "0",
     userDeposits: "0",
     loading: false,
+    rate: "0",
   } as RootState,
 
   extraReducers: (builder) => {
@@ -77,6 +85,21 @@ const appSlice = createSlice({
       errorNotification(action.error.message ?? "Unknown Error");
     });
 
+    builder.addCase(thunkWithdraw.pending, (state) => {
+      state.loading = true;
+      infoNotification("Withdrawal Request In Progress...");
+    });
+
+    builder.addCase(thunkWithdraw.rejected, (state, action) => {
+      state.loading = false;
+      errorNotification(action.error.message ?? "Unknown Error");
+    });
+
+    builder.addCase(thunkWithdraw.fulfilled, (state) => {
+      state.loading = false;
+      withdrawalSuccessNotification();
+    });
+
     builder.addCase(thunkGetData.pending, (state) => {
       state.loading = true;
     });
@@ -110,6 +133,7 @@ const appSlice = createSlice({
       state.migratorOpenState = action.payload.newState.migratorOpenState;
       state.totalDeposits = action.payload.newState.totalDeposits;
       state.userDeposits = action.payload.newState.userDeposits;
+      state.rate = action.payload.newState.rate;
     },
 
     setDeposit: (state, action: PayloadAction<{ depositAmount: string }>) => {
