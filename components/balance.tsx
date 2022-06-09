@@ -1,7 +1,10 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useStoreState } from "hooks/useStore";
 import { MigratorOpenState } from "store/slice";
 import { useConnect } from "wagmi";
+
+const formatDisplayNumber = (number: string) =>
+  Number(number) !== 0 ? Number(number).toFixed(4) : 0;
 
 export const Loader: React.FC = () => (
   <svg
@@ -49,24 +52,32 @@ const BalanceState: React.FC = () => {
       {state.migratorOpenState === MigratorOpenState.Open && (
         <>
           <p>
-            Your BDI Balance is:{" "}
+            Your BDI Balance is:&nbsp;
             <span className="text-primary-dark font-bold">
-              {ethers.utils.formatUnits(state.balance, state.decimals)}
+              {formatDisplayNumber(
+                ethers.utils.formatUnits(state.balance, state.decimals)
+              )}
             </span>
           </p>
           <p className="ml-2">
-            You deposited:{" "}
+            You deposited:&nbsp;
             <span className="text-primary-dark font-bold">
-              {ethers.utils.formatUnits(state.userDeposits, state.decimals)} BDI
+              {formatDisplayNumber(
+                ethers.utils.formatUnits(state.userDeposits, state.decimals)
+              )}{" "}
+              BDI
             </span>
           </p>
         </>
       )}
       {state.migratorOpenState === MigratorOpenState.Baking && (
         <>
-          You deposited:{" "}
+          You deposited:&nbsp;
           <span className="text-primary-dark font-bold">
-            {ethers.utils.formatUnits(state.userDeposits, state.decimals)} BDI
+            {formatDisplayNumber(
+              ethers.utils.formatUnits(state.userDeposits, state.decimals)
+            )}{" "}
+            BDI
           </span>
         </>
       )}
@@ -75,7 +86,14 @@ const BalanceState: React.FC = () => {
           <p>
             Your can withdraw:{" "}
             <span className="text-primary-dark font-bold">
-              {ethers.utils.formatUnits(state.userDeposits, state.decimals)}{" "}
+              {formatDisplayNumber(
+                ethers.utils.formatUnits(
+                  BigNumber.from(state.userDeposits).mul(
+                    BigNumber.from(state.rate)
+                  ),
+                  state.decimals
+                )
+              )}{" "}
               DEFI++
             </span>
           </p>

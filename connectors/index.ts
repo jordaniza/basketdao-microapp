@@ -6,7 +6,7 @@ import { chain, configureChains } from "wagmi";
 export const providers = jsonRpcProvider({
   rpc: () => ({
     http:
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? "http://127.0.0.1:8545"
         : "https://rpc.ankr.com/eth",
   }),

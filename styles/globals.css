@@ -2,19 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@font-face {
+  font-family: "Silka";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Silka/silka-regular.woff2") format("woff2");
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@font-face {
+  font-family: "Silka";
+  font-style: bold;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Silka/silka-bold.woff2") format("woff2");
 }
 
-* {
-  box-sizing: border-box;
+@font-face {
+  font-family: "Silka";
+  font-style: medium;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Silka/silka-medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Silka";
+  font-style: light;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/Silka/silka-light.woff2") format("woff2");
 }

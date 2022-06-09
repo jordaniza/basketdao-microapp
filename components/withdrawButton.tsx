@@ -24,7 +24,12 @@ const WithdrawButton: React.FC = () => {
   return (
     <div className="flex w-full">
       <Button
-        disabled={state.loading || inProgress || !isConnected}
+        disabled={
+          state.loading ||
+          inProgress ||
+          !isConnected ||
+          state.userDeposits === "0"
+        }
         onClick={() => withdraw()}
       >
         Withdraw

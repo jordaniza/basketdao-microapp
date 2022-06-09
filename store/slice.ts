@@ -1,12 +1,18 @@
 import {
   approvalSuccessNotification,
   depositSuccessNotification,
+  withdrawalSuccessNotification,
   errorNotification,
   infoNotification,
 } from "@components/notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BigNumber, ethers } from "ethers";
-import { thunkApprove, thunkDeposit, thunkGetData } from "./thunks";
+import {
+  thunkApprove,
+  thunkDeposit,
+  thunkGetData,
+  thunkWithdraw,
+} from "./thunks";
 
 export enum MigratorOpenState {
   Open,
@@ -17,7 +23,7 @@ export enum MigratorOpenState {
 // alias to make it more obvious that this is a number in string repr
 type BigNumberString = string;
 
-export type AppState = {
+export type RootState = {
   balance: BigNumberString;
   decimals: number;
   migratorOpenState: MigratorOpenState;
@@ -25,6 +31,7 @@ export type AppState = {
   approvalLimit: BigNumberString;
   userDeposits: BigNumberString;
   loading: boolean;
+  rate: BigNumberString;
 };
 
 const appSlice = createSlice({
@@ -37,7 +44,8 @@ const appSlice = createSlice({
     approvalLimit: "0",
     userDeposits: "0",
     loading: false,
-  } as AppState,
+    rate: "0",
+  } as RootState,
 
   extraReducers: (builder) => {
     builder.addCase(thunkDeposit.fulfilled, (state, action) => {
@@ -77,6 +85,21 @@ const appSlice = createSlice({
       errorNotification(action.error.message ?? "Unknown Error");
     });
 
+    builder.addCase(thunkWithdraw.pending, (state) => {
+      state.loading = true;
+      infoNotification("Withdrawal Request In Progress...");
+    });
+
+    builder.addCase(thunkWithdraw.rejected, (state, action) => {
+      state.loading = false;
+      errorNotification(action.error.message ?? "Unknown Error");
+    });
+
+    builder.addCase(thunkWithdraw.fulfilled, (state) => {
+      state.loading = false;
+      withdrawalSuccessNotification();
+    });
+
     builder.addCase(thunkGetData.pending, (state) => {
       state.loading = true;
     });
@@ -102,12 +125,15 @@ const appSlice = createSlice({
   reducers: {
     setState: (
       state,
-      action: PayloadAction<{ newState: Omit<AppState, "loading"> }>
+      action: PayloadAction<{ newState: Omit<RootState, "loading"> }>
     ) => {
-      state = {
-        ...action.payload.newState,
-        loading: state.loading,
-      };
+      state.approvalLimit = action.payload.newState.approvalLimit;
+      state.balance = action.payload.newState.balance;
+      state.decimals = action.payload.newState.decimals;
+      state.migratorOpenState = action.payload.newState.migratorOpenState;
+      state.totalDeposits = action.payload.newState.totalDeposits;
+      state.userDeposits = action.payload.newState.userDeposits;
+      state.rate = action.payload.newState.rate;
     },
 
     setDeposit: (state, action: PayloadAction<{ depositAmount: string }>) => {
