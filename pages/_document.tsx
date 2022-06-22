@@ -33,6 +33,7 @@ export default class _Document extends Document {
             type="font/woff2"
             crossOrigin=""
           />
+          <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
         <body>
           <Main />
