@@ -7,9 +7,8 @@ export const NotificationDisplay = () => (
     position="bottom-right"
     autoClose={5000}
     hideProgressBar={false}
-    newestOnTop
-    closeOnClick
     rtl={false}
+    closeOnClick
     pauseOnFocusLoss
     draggable
     pauseOnHover
@@ -38,6 +37,13 @@ export const errorNotification = (err: string) => {
 
 export const walletSubmittedNotification = () =>
   toast("Transaction approved! 👍");
+
+export const chainSwitchNotification = () => {
+  toast.dismiss();
+  toast("You must be connected to Ethereum Mainnet to use this app.", {
+    type: "info",
+  });
+};
 
 export const infoNotification = (text: string) =>
   toast(
