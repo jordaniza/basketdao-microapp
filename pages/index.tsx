@@ -2,7 +2,10 @@ import Balance from "@components/balance";
 import ConnectWallet from "@components/connectWallet";
 import DepositButton from "@components/depositButton";
 import WithdrawButton from "@components/withdrawButton";
-import { NotificationDisplay } from "@components/notification";
+import {
+  chainSwitchNotification,
+  NotificationDisplay,
+} from "@components/notification";
 import Content from "@components/content";
 import { BigNumber } from "ethers";
 import { useBDITokenContract, useMigratorContract } from "hooks/useContract";
@@ -13,7 +16,7 @@ import { useEffect } from "react";
 import { thunkGetData } from "store/thunks";
 import Logo from "public/logo.svg";
 import { MigratorOpenState } from "../store/slice";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount, useConnect, useNetwork } from "wagmi";
 
 const useOnChainData = () => {
   const bdi = useBDITokenContract();
@@ -27,9 +30,20 @@ const useOnChainData = () => {
 };
 
 const Dapp: NextPage = () => {
+  const { switchNetwork, activeChain } = useNetwork({
+    onError() {
+      chainSwitchNotification();
+    },
+  });
   const [state] = useStoreState();
   const { isConnected } = useConnect();
   useOnChainData();
+
+  useEffect(() => {
+    if (switchNetwork && activeChain?.id !== 1) {
+      switchNetwork(1);
+    }
+  }, [activeChain?.id, switchNetwork]);
 
   return (
     <>
@@ -55,17 +69,25 @@ const Dapp: NextPage = () => {
               <Content phase={!isConnected ? 0 : state.migratorOpenState} />
               <ConnectWallet />
             </div>
-            <div className="w-full flex flex-col gap-y-1 items-start">
-              <Balance />
-              {isConnected &&
-                state.migratorOpenState === MigratorOpenState.Open && (
-                  <DepositButton max={BigNumber.from(state.balance)} />
-                )}
-              {isConnected &&
-                state.migratorOpenState === MigratorOpenState.Closed && (
-                  <WithdrawButton />
-                )}
-            </div>
+            {activeChain?.id === 1 ? (
+              <div className="w-full flex flex-col gap-y-1 items-start">
+                <Balance />
+                {isConnected &&
+                  state.migratorOpenState === MigratorOpenState.Open && (
+                    <DepositButton max={BigNumber.from(state.balance)} />
+                  )}
+                {isConnected &&
+                  state.migratorOpenState === MigratorOpenState.Closed && (
+                    <WithdrawButton />
+                  )}
+              </div>
+            ) : (
+              isConnected && (
+                <h2 className="text-xl font-bold text-primary-dark">
+                  Please switch to Ethereum Mainnet.
+                </h2>
+              )
+            )}
           </div>
         </div>
       </div>
