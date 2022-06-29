@@ -11,7 +11,7 @@ const Content: React.FC<{ phase: number }> = ({ phase }) => {
             lock DeFi for 12 months. Locking it will entitle you to receive a
             part of the BDI-DeFi KPI Options reward. Full details{" "}
             <a
-              href="https://www.notion.so/piedao/BasketDAO-Acquisition-f30e72bf13754c3e844d562804ad1545"
+              href="https://medium.com/piedao/piedao-acquires-basketdao-welcome-to-the-family-168881889c99"
               rel="noreferrer noopener"
               target="_blank"
               className="underline"
