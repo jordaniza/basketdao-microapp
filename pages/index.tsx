@@ -17,7 +17,6 @@ import { thunkGetData } from "store/thunks";
 import Logo from "public/logo.svg";
 import { MigratorOpenState } from "../store/slice";
 import { useAccount, useConnect, useNetwork } from "wagmi";
-import { ReminderDialog } from "@components/reminderDialog";
 
 const useOnChainData = () => {
   const bdi = useBDITokenContract();
@@ -56,7 +55,6 @@ const Dapp: NextPage = () => {
         />
       </Head>
       <div className="w-screen h-screen justify-center items-center flex bg-[linear-gradient(90deg,_#FFFFFF_33.333%,_#6C5DFE_33.333%)]">
-        <ReminderDialog />
         <NotificationDisplay />
         <div className="flex flex-row m-2 p-2 sm:max-w-4xl sm:w-full min-h-fit 2xl:-translate-x-1/4">
           <div className="w-[10px] min-h-full rounded-xl bg-[#A20ED3]" />
